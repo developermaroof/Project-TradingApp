@@ -1,6 +1,8 @@
+import { useState } from "react";
 import Chart from "react-apexcharts";
 
 export const StockChart = ({ chartData, symbol }) => {
+  const [dateFormat, setDateFormat] = useState("24h");
   const { day, week, year } = chartData;
   const options = {
     title: {
@@ -28,16 +30,34 @@ export const StockChart = ({ chartData, symbol }) => {
       },
     },
   };
+
+  const determineTimeFormat = () => {
+    switch (dateFormat) {
+      case "24h":
+        return day;
+      case "7d":
+        return week;
+      case "1y":
+        return year;
+      default:
+        return day;
+    }
+  };
+
   const series = [
     {
       name: symbol,
-      data: day,
+      data: determineTimeFormat(),
     },
   ];
   return (
     <div className="mt-5 p-4 shadow-sm bg-white">
       <Chart options={options} series={series} type="area" width="100%" />
-      <div></div>
+      <div>
+        <button onClick={() => setDateFormat("24h")}>24h</button>
+        <button onClick={() => setDateFormat("7d")}>7d</button>
+        <button onClick={() => setDateFormat("1y")}>1y</button>
+      </div>
     </div>
   );
 };
